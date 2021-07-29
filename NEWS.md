@@ -1,5 +1,7 @@
 # workflowsets (development version)
 
+* `as_workflow_set()` can now take a mixture of workflows or `tune_results` objects. 
+
 # workflowsets 0.1.0
 
 * Fixed an `autoplot()` bug where, if one metric is selected but a ranking metric is not specified, the wrong metric is used to order the workflows (#52)

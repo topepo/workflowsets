@@ -42,8 +42,14 @@ two_class_set <-
 # ------------------------------------------------------------------------------
 
 two_class_res <-
-   two_class_set %>%
-   workflow_map(resamples = folds, grid = 10, seed = 2, verbose = TRUE)
+  two_class_set %>%
+  workflow_map(
+    resamples = folds,
+    grid = 10,
+    seed = 2,
+    verbose = TRUE,
+    control = control_grid(save_workflow = TRUE)
+  )
 
 # ------------------------------------------------------------------------------
 

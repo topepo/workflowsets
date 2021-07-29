@@ -2,23 +2,62 @@
 % Please edit documentation in R/as_workflow_set.R
 \name{as_workflow_set}
 \alias{as_workflow_set}
-\title{Save results from tuning or resampling functions as a workflow set}
+\title{Convert existing objects to a workflow set}
 \usage{
 as_workflow_set(...)
 }
 \arguments{
 \item{...}{One or more named objects. Names should be unique and the
-objects should have at least one of the following classes:
+objects should have at least one of the following classes: \code{workflow},
 \code{iteration_results}, \code{tune_results}, \code{resample_results}, or \code{tune_race}. Each
-element should also contain the original workflow (accomplished using the
-\code{save_workflow} option in the control function).}
+\code{tune_results} element should also contain the original workflow
+(accomplished using the \code{save_workflow} option in the control function).}
 }
 \value{
 A workflow set. Note that the \code{option} column will not reflect the
 options that were used to create each object.
 }
 \description{
-If results have been generated directly from functions like
-\code{\link[tune:tune_grid]{tune::tune_grid()}}, they can be combined into a workflow set using this
-function.
+Use existing objects to create a workflow set. A list of objects that are
+either simple workflows or objects that have class \verb{"tune_results} is
+converted into a workflow set.
+}
+\examples{
+
+# ------------------------------------------------------------------------------
+# Existing results
+
+# Use the already worked example to show how to add tuned
+# objects to a workflow set
+
+results <-  two_class_res \%>\% purrr::pluck("result")
+names(results) <- two_class_res$wflow_id
+
+# These are all objects that have been resampled or tuned:
+purrr::map_chr(results, ~ class(.x)[1])
+
+# Use rlang's !!! operator to splice in the elements of the list
+new_set <- as_workflow_set(!!!results)
+
+# ------------------------------------------------------------------------------
+# Make a set from unfit workflows
+
+library(parsnip)
+library(workflows)
+
+lr_spec <- logistic_reg()
+
+main_effects <-
+   workflow() \%>\%
+   add_model(lr_spec) \%>\%
+   add_formula(Class ~ .)
+
+interactions <-
+   workflow() \%>\%
+   add_model(lr_spec) \%>\%
+   add_formula(Class ~ (.)^2)
+
+two_workflows <- list(main = main_effects, int = interactions)
+as_workflow_set(!!!two_workflows)
+
 }

@@ -59,6 +59,12 @@ test_that("creating workflow sets", {
    model_list <- car_set_1$result
    names(model_list) <- car_set_1$wflow_id
 
+   wflow_list <- purrr::map(car_set_1$result, extract_workflow)
+   names(wflow_list) <- car_set_1$wflow_id
+
+   mixed_list <- model_list
+   mixed_list[[2]] <- wflow_list[[2]]
+
    expect_error(
       car_set_2 <- as_workflow_set(!!!model_list),
       regex = NA
@@ -91,6 +97,24 @@ test_that("creating workflow sets", {
       all(purrr::map_lgl(car_set_2$result, ~ any(names(.x) == ".predictions")))
    )
 
+   # ------------------------------------------------------------------------------
+   # workflows as inputs
+
+   expect_error(
+      car_set_3 <- as_workflow_set(!!!wflow_list),
+      regex = NA
+   )
+
+   expect_true(
+      all(purrr::map_lgl(car_set_3$wflow_id, is.character))
+   )
+   expect_true(
+      all(purrr::map_lgl(car_set_3$info, tibble::is_tibble))
+   )
+
+
+   # ------------------------------------------------------------------------------
+   # mixed inputs
 })
 
 test_that("correct object type and resamples", {
@@ -122,7 +146,7 @@ test_that("correct object type and resamples", {
 
    res_2 <- set_1
    res_2$result <-
-      map(res_2$wflow_id, ~ pull_workflow(res_2, id = .x)) %>%
+      map(res_2$wflow_id, ~ extract_workflow(res_2, id = .x)) %>%
       purrr::map(~ fit_resamples(.x, resamples = bootstraps(mtcars, 3)))
    expect_identical(
       workflowsets:::has_valid_column_result_inner_types(res_2),

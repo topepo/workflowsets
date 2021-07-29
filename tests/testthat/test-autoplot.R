@@ -42,7 +42,7 @@ test_that("autoplot with without error bars", {
 test_that("autoplot for specific workflow result", {
    p_3 <- autoplot(chi_features_res, id = "plus_pca_lm")
    p_4 <- autoplot(
-      pull_workflow_set_result(
+      extract_workflow_set_result(
          chi_features_res, id = "plus_pca_lm"
       )
    )

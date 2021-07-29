@@ -130,7 +130,7 @@ We can also pull out the results of `tune_grid()` for this model:
 ```{r mars-results-print}
 mars_results <- 
   all_workflows %>% 
-  pull_workflow_set_result("formula_mars")
+  extract_workflow_set_result("formula_mars")
 mars_results
 ```
 
@@ -139,7 +139,7 @@ Let's get that workflow object and finalize the model:
 ```{r final-mars}
 mars_workflow <- 
   all_workflows %>% 
-  pull_workflow("formula_mars")
+  extract_workflow("formula_mars")
 mars_workflow
 
 mars_workflow_fit <- 

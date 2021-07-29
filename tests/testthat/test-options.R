@@ -56,6 +56,6 @@ test_that("option printing", {
    )
    expect_equal(
       tibble::type_sum(two_class_res$option[[1]]),
-      "opts[2]"
+      "opts[3]"
    )
 })

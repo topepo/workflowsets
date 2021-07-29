@@ -211,7 +211,7 @@ is_valid_result_inner_type <- function(x) {
       # Default, before any results are filled
       return(TRUE)
    }
-   inherits(x, "tune_results") | inherits(x, "try-error")
+   is.null(x) || inherits(x, "tune_results") | inherits(x, "try-error")
 }
 is_default_result_element <- function(x) {
    identical(x, list())
